@@ -9,7 +9,7 @@ uint8_t init_sensors(Sensor_root ***s) {
   // Don't forget to update 'max_sensors' when you add more sensors
   uint8_t max_sensors = 2;
 
-  *s = (Sensor_root **)malloc(max_sensors*sizeof(Sensor_root *));
+  *s = (Sensor_root **)calloc(max_sensors, sizeof(Sensor_root *));
   sensors = *s;
 
   // Add more sensors here

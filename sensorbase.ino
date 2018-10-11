@@ -36,6 +36,9 @@ void setup() {
 #endif
   num_of_sensors = init_sensors(&sensors);
   for(int i = 0; i < num_of_sensors; i++) {
+    if (!sensors[i]) {
+      continue;
+    }
     sensors[i]->config_mqtt(&mqtt, SENSORBASE_MQTT_QOS);
   }
 #ifdef DEBUG
@@ -52,13 +55,19 @@ void setup() {
   mqtt.subscribe(&my_hup);
   mqtt.subscribe(&global_hup);
   for(int i = 0; i < num_of_sensors; i++) {
+    if (!sensors[i]) {
+      continue;
+    }
     bool result = sensors[i]->setup();
+    if (!result) {
+      delete(sensors[i]);
+      sensors[i] = NULL;
+    }
 #ifdef DEBUG
     if (result) {
      Serial.print("Setup OK "); Serial.println(i);
     } else {
      Serial.print("Setup ERROR "); Serial.println(i);
-     //hang();
     }
 #endif
   }
@@ -92,6 +101,9 @@ void loop() {
   publish_success = true;
   if (x_timer == 0) {
     for(int i = 0; i < num_of_sensors; i++) {
+      if (!sensors[i]) {
+        continue;
+      }
       publish_success &= sensors[i]->publish();
     }
   }
