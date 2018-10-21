@@ -30,7 +30,7 @@ Adafruit_MQTT_Subscribe global_hup = Adafruit_MQTT_Subscribe(&mqtt, SENSORBASE_G
 void MQTT_connect();
 
 void setup() {
-#ifdef DEBUG
+#ifdef SB_DEBUG
   Serial.begin(115200); delay(10);
   Serial.println("Start init sensors");
 #endif
@@ -41,14 +41,14 @@ void setup() {
     }
     sensors[i]->config_mqtt(&mqtt, SENSORBASE_MQTT_QOS);
   }
-#ifdef DEBUG
+#ifdef SB_DEBUG
   Serial.print("Connecting to "); Serial.println(WLAN_SSID);
 #endif
   WiFi.begin(WLAN_SSID, WLAN_PASS);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
-#ifdef DEBUG
+#ifdef SB_DEBUG
   Serial.println("WiFi connected");
   Serial.println("IP address: "); Serial.println(WiFi.localIP());
 #endif
@@ -63,7 +63,7 @@ void setup() {
       delete(sensors[i]);
       sensors[i] = NULL;
     }
-#ifdef DEBUG
+#ifdef SB_DEBUG
     if (result) {
      Serial.print("Setup OK "); Serial.println(i);
     } else {
@@ -90,7 +90,7 @@ void loop() {
   MQTT_connect();
   while ((subscription = mqtt.readSubscription(TURNAROUND_SEC * 1000))) {
     if (subscription == &my_hup || subscription == &global_hup) {
-#ifdef DEBUG
+#ifdef SB_DEBUG
       Serial.print(F("Got: "));
       Serial.println((char *)((*subscription).lastread));
 #endif
@@ -131,12 +131,12 @@ void MQTT_connect() {
   if (mqtt.connected()) {
     return;
   }
-#ifdef DEBUG
+#ifdef SB_DEBUG
   Serial.print("Connecting to MQTT... ");
 #endif
   uint8_t retries = 10;
   while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
-#ifdef DEBUG
+#ifdef SB_DEBUG
        Serial.println(mqtt.connectErrorString(ret));
        Serial.println("Retrying MQTT connection in 5 seconds...");
 #endif
@@ -148,7 +148,7 @@ void MQTT_connect() {
          while (1);
        }
   }
-#ifdef DEBUG
+#ifdef SB_DEBUG
   Serial.println("MQTT Connected!");
 #endif
 }

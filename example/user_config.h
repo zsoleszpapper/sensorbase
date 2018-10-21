@@ -1,8 +1,8 @@
 #ifndef USER_CONFIG_H
 #define USER_CONFIG_H
 
-#define DEBUG
-#undef DEBUG
+#define SB_DEBUG
+#undef SB_DEBUG
 
 #define SITE_USA 1
 #define SITE_RUSSIA 2
